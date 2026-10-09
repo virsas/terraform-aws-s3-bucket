@@ -29,7 +29,7 @@ resource "aws_s3_bucket_cors_configuration" "vss" {
   bucket = aws_s3_bucket.vss.id
 
   dynamic "cors_rule" {
-    for_each = try([var.cors_rules],[])
+    for_each = local.cors_rules
 
     content {
       allowed_methods = cors_rule.value.allowed_methods

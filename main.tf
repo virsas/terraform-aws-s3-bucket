@@ -118,6 +118,17 @@ resource "aws_s3_bucket_logging" "vss" {
   depends_on = [aws_s3_bucket.vss]
 }
 
+resource "aws_s3_bucket_ownership_controls" "vss" {
+  count  = var.ownership_controls_enabled ? 1 : 0
+  bucket = aws_s3_bucket.vss.id
+
+  rule {
+    object_ownership = var.object_ownership
+  }
+
+  depends_on = [aws_s3_bucket.vss]
+}
+
 resource "aws_s3_bucket_website_configuration" "vss" {
   count = var.website_enabled && var.website_index_page != "" && var.website_error_page != "" ? 1 : 0
   bucket = aws_s3_bucket.vss.id

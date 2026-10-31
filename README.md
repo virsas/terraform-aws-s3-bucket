@@ -1,6 +1,6 @@
 # Terraform AWS S3 Bucket Module
 
-A Terraform module for managing [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) buckets together with the full set of companion configuration resources: bucket policy, public access block, versioning, server side encryption, lifecycle rules, logging, replication, CORS, event notifications, object lock and static website hosting.
+A Terraform module for managing [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) buckets together with the full set of companion configuration resources: bucket policy, public access block, versioning, server side encryption, lifecycle rules, logging, ownership controls, replication, CORS, event notifications, object lock and static website hosting.
 
 ## Features
 
@@ -12,6 +12,7 @@ A Terraform module for managing [Amazon S3](https://docs.aws.amazon.com/AmazonS3
 - **Lifecycle Rules**: Accepts an arbitrary list of lifecycle rules supporting expiration, transition, filter and abort incomplete multipart upload blocks.
 - **Object Lock**: Optionally creates the bucket with object lock enabled and applies a default retention mode and period to new objects.
 - **Access Logging**: Optionally ships server access logs to a target bucket under a configurable prefix.
+- **Object Ownership**: Optionally manages S3 bucket ownership controls. Disabled by default. Allowed settings are `BucketOwnerEnforced`, `BucketOwnerPreferred` and `ObjectWriter`.
 - **Static Website Hosting**: Optionally serves the bucket as a static website with configurable index and error documents.
 - **Event Notifications**: Optionally notifies an SQS queue or a Lambda function about bucket events.
 - **CORS**: Optionally applies a CORS rule with configurable methods, origins, headers and exposed headers.
@@ -201,6 +202,7 @@ module "s3_bucket_compliance" {
 | [aws_s3_bucket_notification.vss_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
 | [aws_s3_bucket_notification.vss_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
 | [aws_s3_bucket_object_lock_configuration.vss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object_lock_configuration) | resource |
+| [aws_s3_bucket_ownership_controls.vss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_policy.vss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.vss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_replication_configuration.vss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_replication_configuration) | resource |
@@ -227,6 +229,8 @@ module "s3_bucket_compliance" {
 | <a name="input_versioning_enabled"></a> [versioning\_enabled](#input\_versioning\_enabled) | Enable object versioning on the bucket. Disabling it does not delete existing versions, it only stops the versioning resource from being managed. | `bool` | `true` | no |
 | <a name="input_logging_bucket"></a> [logging\_bucket](#input\_logging\_bucket) | Name of the bucket that receives server access logs. Leave as an empty string to disable logging. | `string` | `""` | no |
 | <a name="input_logging_prefix"></a> [logging\_prefix](#input\_logging\_prefix) | Prefix under which access logs are stored, producing the path `s3://<logging_bucket>/<logging_prefix>/<name>/`. | `string` | `"s3"` | no |
+| <a name="input_ownership_controls_enabled"></a> [ownership\_controls\_enabled](#input\_ownership\_controls\_enabled) | Manage S3 bucket ownership controls. When `false`, the ownership controls resource is not created. | `bool` | `false` | no |
+| <a name="input_object_ownership"></a> [object\_ownership](#input\_object\_ownership) | Object ownership setting applied when `ownership_controls_enabled` is `true`. Allowed values are `BucketOwnerEnforced`, `BucketOwnerPreferred` and `ObjectWriter`. | `string` | `"BucketOwnerEnforced"` | no |
 | <a name="input_lifecycle_rules"></a> [lifecycle\_rules](#input\_lifecycle\_rules) | List of lifecycle rules. Each rule supports `name`, `enabled`, `abort_incomplete_multipart_in_days`, `filter` (`prefix`, `tags`, `object_size_greater_than`, `object_size_less_than`), `expiration` (`date`, `days`) and `transition` (`date`, `days`, `storage_class`). A JSON encoded string is also accepted and decoded automatically. | `any` | `[]` | no |
 | <a name="input_website_enabled"></a> [website\_enabled](#input\_website\_enabled) | Enable static website hosting on the bucket. The website configuration is only created when both `website_index_page` and `website_error_page` are non empty. | `string` | `false` | no |
 | <a name="input_website_index_page"></a> [website\_index\_page](#input\_website\_index\_page) | Suffix of the index document served for directory requests. | `string` | `"index.html"` | no |

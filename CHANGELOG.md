@@ -12,3 +12,7 @@
 ## [v1.2] (2026-07-27)
 
 - Fixed CORS configuration
+
+## [v1.3] (2026-10-31)
+
+- Added optional S3 bucket ownership controls

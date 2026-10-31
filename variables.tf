@@ -60,6 +60,16 @@ variable "logging_prefix" {
   type        = string
   default     = "s3"
 }
+variable "ownership_controls_enabled" {
+  description = "Whether to manage S3 bucket ownership controls"
+  type        = bool
+  default     = false
+}
+variable "object_ownership" {
+  description = "Object ownership setting: BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter"
+  type        = string
+  default     = "BucketOwnerEnforced"
+}
 variable "lifecycle_rules" {
   description = "Lifecycle rules. By default empty. Example of one: lifecycle_rules = [{name = \"DeleteAnyInWeek\", enabled = true, expiration_date = \"\", expiration_days = 7}]"
   type        = any
